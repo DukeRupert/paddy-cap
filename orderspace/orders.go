@@ -178,7 +178,6 @@ func (c *Client) ListOrders(options *OrderListOptions) (*OrdersResponse, error) 
 }
 
 // GetOrder retrieves a single order by ID
-// GetOrder retrieves a single order by ID
 func (c *Client) GetOrder(orderID string) (*Order, error) {
 	slog.Info("GetOrder called", "orderID", orderID)
 

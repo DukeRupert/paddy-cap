@@ -26,9 +26,9 @@ type contextKey string
 
 const (
 	// uidKey    contextKey = "userID"
-	ridKey    contextKey = "requestID"
-	timeKey   contextKey = "requestTime"
-	loggerKey contextKey = "requestLogger"
+	RidKey    contextKey = "requestID"
+	TimeKey   contextKey = "requestTime"
+	LoggerKey contextKey = "requestLogger"
 )
 
 type eventKey string
@@ -57,7 +57,7 @@ func (w *wrappedWriter) Write(b []byte) (int, error) {
 
 func RequestID(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.WithValue(r.Context(), ridKey, generateRequestID())
+		ctx := context.WithValue(r.Context(), RidKey, generateRequestID())
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
@@ -104,7 +104,7 @@ func Logging(next http.Handler) http.Handler {
 			statusCode:     http.StatusOK,
 		}
 
-		rid, ok := r.Context().Value(ridKey).(string)
+		rid, ok := r.Context().Value(RidKey).(string)
 		if !ok {
 			rid = "unknown"
 			slog.Warn("missing_request_id",
@@ -121,8 +121,8 @@ func Logging(next http.Handler) http.Handler {
 		)
 
 		// Add logger and start time to context
-		ctx := context.WithValue(r.Context(), loggerKey, logger)
-		ctx = context.WithValue(ctx, timeKey, start)
+		ctx := context.WithValue(r.Context(), LoggerKey, logger)
+		ctx = context.WithValue(ctx, TimeKey, start)
 		r = r.WithContext(ctx)
 
 		// Panic recovery
