@@ -9,19 +9,6 @@ import (
 	"time"
 )
 
-type Middleware func(http.Handler) http.Handler
-
-func CreateStack(m ...Middleware) Middleware {
-	return func(next http.Handler) http.Handler {
-		for i := len(m) - 1; i >= 0; i-- {
-			x := m[i]
-			next = x(next)
-		}
-
-		return next
-	}
-}
-
 type contextKey string
 
 const (
@@ -35,7 +22,7 @@ type eventKey string
 
 const (
 	completed eventKey = "http_request_completed"
-	panic eventKey = "http_request_panic"
+	panic     eventKey = "http_request_panic"
 )
 
 type wrappedWriter struct {
@@ -50,12 +37,13 @@ func (w *wrappedWriter) WriteHeader(statusCode int) {
 }
 
 func (w *wrappedWriter) Write(b []byte) (int, error) {
-        n, err := w.ResponseWriter.Write(b)
-        w.size += n
-        return n, err
-    }
+	n, err := w.ResponseWriter.Write(b)
+	w.size += n
+	return n, err
+}
 
 func RequestID(next http.Handler) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), RidKey, generateRequestID())
 		r = r.WithContext(ctx)
@@ -65,6 +53,7 @@ func RequestID(next http.Handler) http.Handler {
 
 // CORS handles CORS headers
 func CORS(next http.Handler) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "*") // or specific domain like "https://myapp.com"
@@ -85,6 +74,7 @@ func CORS(next http.Handler) http.Handler {
 }
 
 func Logging(next http.Handler) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
