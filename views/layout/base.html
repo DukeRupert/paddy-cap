@@ -1,0 +1,17 @@
+{{/* views/layout/base.html - Main layout structure */}}
+{{define "layout"}}
+<!doctype html>
+<html lang="en">
+
+<head>
+    {{template "head" .}}
+</head>
+
+<body class="h-full bg-gray-50">
+    {{template "header" .}}
+    {{template "content" .}}
+    {{template "scripts" .}}
+</body>
+
+</html>
+{{end}}

@@ -1,0 +1,42 @@
+{{define "scripts"}}
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    }
+
+    async function refreshOrders() {
+        const button = document.querySelector('#refresh-text');
+        const originalText = button.textContent;
+
+        button.textContent = 'Refreshing...';
+
+        try {
+            const response = await fetch('/refresh-orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                button.textContent = 'Refreshed!';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                button.textContent = 'Error!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Refresh failed:', error);
+            button.textContent = 'Error!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+    }
+</script>
+{{end}}

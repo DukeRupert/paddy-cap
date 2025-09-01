@@ -1,0 +1,75 @@
+{{/* views/partials/styles.html - CSS styles */}}
+{{define "styles"}}
+<style>
+    .status-badge {
+        @apply px-2 py-1 rounded-full text-xs font-medium;
+    }
+
+    .status-completed {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .status-processing {
+        @apply bg-blue-100 text-blue-800;
+    }
+
+    .status-pending {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .status-new {
+        @apply bg-purple-100 text-purple-800;
+    }
+
+    .status-cancelled {
+        @apply bg-red-100 text-red-800;
+    }
+
+    .status-on-hold {
+        @apply bg-gray-100 text-gray-800;
+    }
+
+    .origin-woocommerce {
+        @apply bg-blue-50 border-l-4 border-blue-400;
+    }
+
+    .origin-orderspace {
+        @apply bg-green-50 border-l-4 border-green-400;
+    }
+
+    /* HTMX loading styles */
+    .htmx-indicator {
+        opacity: 0;
+        transition: opacity 500ms ease-in;
+    }
+
+    .htmx-request .htmx-indicator {
+        opacity: 1;
+    }
+
+    .htmx-request.htmx-indicator {
+        opacity: 1;
+    }
+
+    /* Loading spinner */
+    .spinner {
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #3498db;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{{end}}

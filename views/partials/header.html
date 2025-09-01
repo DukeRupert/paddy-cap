@@ -1,0 +1,10 @@
+{{define "header"}}
+<header class="bg-white shadow">
+    <nav aria-label="Global" class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+        {{template "header-logo" .}}
+        {{template "mobile-menu-button" .}}
+        {{template "desktop-nav" .}}
+    </nav>
+    {{template "mobile-menu" .}}
+</header>
+{{end}}

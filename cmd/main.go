@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html/template"
+	"io"
 	"log"
 	"log/slog"
 	"net"
 	"net/http"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -201,6 +204,11 @@ func (s *OrderService) ConvertOrderspaceOrder(order orderspace.Order) Order {
 }
 
 func NewServer(logger *slog.Logger, cfg ServerConfig) http.Handler {
+	// Initialize the template renderer
+	if err := InitTemplateRenderer(); err != nil {
+		panic("Failed to initialize template renderer: " + err.Error())
+	}
+
 	mux := http.NewServeMux()
 	orderService := NewOrderService(logger, cfg)
 	addRoutes(logger, mux, orderService)
@@ -218,6 +226,22 @@ func addRoutes(logger *slog.Logger, mux *http.ServeMux, orderService *OrderServi
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
+	data := map[string]interface{}{
+		"Title":   "Home Page",
+		"Message": "Welcome to our website!",
+		"User": map[string]string{
+			"Name":  "John Doe",
+			"Email": "john@example.com",
+		},
+	}
+
+	if err := RenderTemplate(w, "home", data); err != nil {
+		http.Error(w, "Error rendering template: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleHealthZ(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.Error(w, "Not found", http.StatusNotFound)
 		return
@@ -285,6 +309,102 @@ func handleGetOrders(logger *slog.Logger, orderService *OrderService) http.Handl
 			http.Error(w, "Failed to retrieve orders", http.StatusInternalServerError)
 		}
 	})
+}
+
+// TemplateRenderer handles HTML template rendering
+type TemplateRenderer struct {
+	templates map[string]*template.Template
+}
+
+// NewTemplateRenderer creates a new template renderer and parses all templates
+func NewTemplateRenderer() (*TemplateRenderer, error) {
+	tr := &TemplateRenderer{
+		templates: make(map[string]*template.Template),
+	}
+	
+	if err := tr.parseTemplates(); err != nil {
+		return nil, err
+	}
+	
+	return tr, nil
+}
+
+// parseTemplates parses all templates from the views directory structure
+func (tr *TemplateRenderer) parseTemplates() error {
+	// Get all layout files
+	layoutFiles, err := filepath.Glob("views/layout/*.html")
+	if err != nil {
+		return fmt.Errorf("error finding layout files: %w", err)
+	}
+
+	// Get all partial files
+	partialFiles, err := filepath.Glob("views/partials/*.html")
+	if err != nil {
+		return fmt.Errorf("error finding partial files: %w", err)
+	}
+
+	// Get all page files
+	pageFiles, err := filepath.Glob("views/page/*.html")
+	if err != nil {
+		return fmt.Errorf("error finding page files: %w", err)
+	}
+
+	// For each page, create a template that includes layouts and partials
+	for _, pageFile := range pageFiles {
+		// Get the base name of the page file (without extension)
+		pageName := filepath.Base(pageFile)
+		templateName := pageName[:len(pageName)-len(filepath.Ext(pageName))]
+
+		// Combine all template files for this page
+		var templateFiles []string
+		templateFiles = append(templateFiles, layoutFiles...)
+		templateFiles = append(templateFiles, partialFiles...)
+		templateFiles = append(templateFiles, pageFile)
+
+		// Parse the combined templates
+		tmpl, err := template.New(templateName).ParseFiles(templateFiles...)
+		if err != nil {
+			return fmt.Errorf("error parsing template %s: %w", templateName, err)
+		}
+
+		tr.templates[templateName] = tmpl
+	}
+
+	return nil
+}
+
+// Render renders a template with the given data
+func (tr *TemplateRenderer) Render(w io.Writer, templateName string, data interface{}) error {
+	tmpl, exists := tr.templates[templateName]
+	if !exists {
+		return fmt.Errorf("template %s not found", templateName)
+	}
+
+	return tmpl.Execute(w, data)
+}
+
+// RenderToResponse renders a template directly to an HTTP response
+func (tr *TemplateRenderer) RenderToResponse(w http.ResponseWriter, templateName string, data interface{}) error {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	return tr.Render(w, templateName, data)
+}
+
+// Global template renderer instance
+var renderer *TemplateRenderer
+
+// Initialize the template renderer (call this in main or init)
+func InitTemplateRenderer() error {
+	var err error
+	renderer, err = NewTemplateRenderer()
+	return err
+}
+
+// Convenience function to render templates in handlers
+func RenderTemplate(w http.ResponseWriter, templateName string, data interface{}) error {
+	if renderer == nil {
+		return fmt.Errorf("template renderer not initialized")
+	}
+	return renderer.RenderToResponse(w, templateName, data)
 }
 
 func encode[T any](w http.ResponseWriter, r *http.Request, status int, v T) error {
