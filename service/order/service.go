@@ -106,7 +106,7 @@ func (s *OrderService) ConvertWooOrder(order woocommerce.Order) Order {
 		DeliverOn:   "N/A",
 		Total:       FormatCurrency(total, order.Currency),
 		Status:      s.TitleCaser.String(order.Status),
-		Origin:      "WooCommerce",
+		Origin:      "woocommerce",
 		SortDate:    sortDate,
 	}
 }
@@ -148,7 +148,7 @@ func (s *OrderService) ConvertOrderspaceOrder(order orderspace.Order) Order {
 		DeliverOn:   deliverOn,
 		Total:       FormatCurrency(order.GrossTotal, order.Currency),
 		Status:      s.TitleCaser.String(order.Status),
-		Origin:      "Orderspace",
+		Origin:      "orderspace",
 		SortDate:    sortDate,
 	}
 }

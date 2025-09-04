@@ -20,11 +20,11 @@ func NewTemplateRenderer() (*TemplateRenderer, error) {
 	tr := &TemplateRenderer{
 		templates: make(map[string]*template.Template),
 	}
-	
+
 	if err := tr.parseTemplates(); err != nil {
 		return nil, err
 	}
-	
+
 	return tr, nil
 }
 
@@ -60,8 +60,14 @@ func (tr *TemplateRenderer) parseTemplates() error {
 		templateFiles = append(templateFiles, partialFiles...)
 		templateFiles = append(templateFiles, pageFile)
 
+		funcMap := template.FuncMap{
+			"even": func(i int) bool {
+				return i%2 == 0
+			},
+		}
+
 		// Parse the combined templates
-		tmpl, err := template.New(templateName).ParseFiles(templateFiles...)
+		tmpl, err := template.New(templateName).Funcs(funcMap).ParseFiles(templateFiles...)
 		if err != nil {
 			return fmt.Errorf("error parsing template %s: %w", templateName, err)
 		}
