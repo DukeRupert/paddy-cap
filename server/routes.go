@@ -138,13 +138,22 @@ func handleGetOrder(l *slog.Logger, t *TemplateRenderer, o *order.OrderService) 
 				http.Error(w, "failed to retrieve order details", http.StatusInternalServerError)
 				return
 			}
-			err = encode(w, r, http.StatusOK, order)
-			if err != nil {
-				l.Error("failed to encode order details", "error_message", err.Error())
-				http.Error(w, "failed to encode order details", http.StatusInternalServerError)
+			data := map[string]any{
+				"Title": "Orders Page",
+				"Order": order,
+			}
+			if err := t.Render(w, "order-details-orderspace", data); err != nil {
+				http.Error(w, "Error rendering template: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 			return
+			// err = encode(w, r, http.StatusOK, order)
+			// if err != nil {
+			// 	l.Error("failed to encode order details", "error_message", err.Error())
+			// 	http.Error(w, "failed to encode order details", http.StatusInternalServerError)
+			// 	return
+			// }
+			// return
 		case WooCommerce:
 			oid, err := strconv.Atoi(orderID)
 			if err != nil {

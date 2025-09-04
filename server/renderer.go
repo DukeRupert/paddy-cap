@@ -64,6 +64,9 @@ func (tr *TemplateRenderer) parseTemplates() error {
 			"even": func(i int) bool {
 				return i%2 == 0
 			},
+			"subtract": func(a, b float64) float64 {
+				return a - b
+			},
 		}
 
 		// Parse the combined templates

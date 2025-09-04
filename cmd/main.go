@@ -5,12 +5,13 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-
 	"os"
 	"time"
 
 	"github.com/dukerupert/paddy-cap/server"
 	"github.com/dukerupert/paddy-cap/service/order"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Config struct {
