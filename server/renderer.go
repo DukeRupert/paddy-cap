@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -71,11 +72,48 @@ func (tr *TemplateRenderer) parseTemplates() error {
 			"title": strings.Title,
 			"subtractFloat": func(total, tax, shipping, shippingTax string) string {
 				// Convert strings to floats, subtract, return as string
-				// Implementation depends on your parsing needs
+				// Convert strings to float64
+				totalFloat, err := strconv.ParseFloat(total, 64)
+				if err != nil {
+					return "0" // Return "0" on parsing error
+				}
+
+				taxFloat, err := strconv.ParseFloat(tax, 64)
+				if err != nil {
+					return "0"
+				}
+
+				shippingFloat, err := strconv.ParseFloat(shipping, 64)
+				if err != nil {
+					return "0"
+				}
+
+				shippingTaxFloat, err := strconv.ParseFloat(shippingTax, 64)
+				if err != nil {
+					return "0"
+				}
+
+				// Calculate: total - tax - shipping - shippingTax
+				result := totalFloat - taxFloat - shippingFloat - shippingTaxFloat
+
+				// Convert back to string with appropriate formatting
+				return fmt.Sprintf("%.2f", result)
 			},
 			"divideFloat": func(subtotal string, quantity int) float64 {
 				// Convert subtotal string to float, divide by quantity
-				// Implementation depends on your parsing needs
+				/// Convert subtotal string to float64
+				subtotalFloat, err := strconv.ParseFloat(subtotal, 64)
+				if err != nil {
+					return 0.0 // Return 0.0 on parsing error
+				}
+
+				// Handle division by zero
+				if quantity == 0 {
+					return 0.0
+				}
+
+				// Divide subtotal by quantity
+				return subtotalFloat / float64(quantity)
 			},
 		}
 
