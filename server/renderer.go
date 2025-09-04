@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 // TemplateRenderer handles HTML template rendering
@@ -66,6 +67,15 @@ func (tr *TemplateRenderer) parseTemplates() error {
 			},
 			"subtract": func(a, b float64) float64 {
 				return a - b
+			},
+			"title": strings.Title,
+			"subtractFloat": func(total, tax, shipping, shippingTax string) string {
+				// Convert strings to floats, subtract, return as string
+				// Implementation depends on your parsing needs
+			},
+			"divideFloat": func(subtotal string, quantity int) float64 {
+				// Convert subtotal string to float, divide by quantity
+				// Implementation depends on your parsing needs
 			},
 		}
 

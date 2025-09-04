@@ -1,0 +1,281 @@
+{{define "order-details-woocommerce"}}
+{{template "layout" .}}
+{{end}}
+
+{{define "content"}}
+<div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+    <div class="lg:grid lg:grid-cols-3 lg:gap-x-8">
+
+        <!-- Order Summary -->
+        <div class="lg:col-start-3 lg:row-end-1">
+            <h2 class="sr-only">Summary</h2>
+            <div
+                class="bg-white rounded-lg bg-gray-50 shadow-xs outline-1 outline-gray-900/5 dark:bg-gray-800/50 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+                <dl class="flex flex-wrap">
+                    <div class="flex-auto pt-6 pl-6">
+                        <dt class="text-sm/6 font-semibold text-gray-900 dark:text-white">Total Amount</dt>
+                        <dd class="mt-1 text-base font-semibold text-gray-900 dark:text-white">{{.Order.Currency}}
+                            {{.Order.Total}}</dd>
+                    </div>
+                    <div class="flex-none self-end px-6 pt-4">
+                        <dt class="sr-only">Status</dt>
+                        <dd class="rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset
+                            {{if eq .Order.Status " completed"}}bg-green-50 text-green-600 ring-green-600/20
+                            dark:bg-green-500/10 dark:text-green-500 dark:ring-green-500/30 {{else if eq
+                            .Order.Status "processing" }}bg-blue-50 text-blue-600 ring-blue-600/20 dark:bg-blue-500/10
+                            dark:text-blue-500 dark:ring-blue-500/30 {{else if eq .Order.Status "pending" }}bg-yellow-50
+                            text-yellow-600 ring-yellow-600/20 dark:bg-yellow-500/10 dark:text-yellow-500
+                            dark:ring-yellow-500/30 {{else if eq .Order.Status "cancelled" }}bg-red-50 text-red-600
+                            ring-red-600/20 dark:bg-red-500/10 dark:text-red-500 dark:ring-red-500/30 {{else if eq
+                            .Order.Status "refunded" }}bg-red-50 text-red-600 ring-red-600/20 dark:bg-red-500/10
+                            dark:text-red-500 dark:ring-red-500/30 {{else if eq .Order.Status "on-hold" }}bg-yellow-50
+                            text-yellow-600 ring-yellow-600/20 dark:bg-yellow-500/10 dark:text-yellow-500
+                            dark:ring-yellow-500/30 {{else}}bg-gray-50 text-gray-600 ring-gray-600/20
+                            dark:bg-gray-500/10 dark:text-gray-500 dark:ring-gray-500/30{{end}}">
+                            {{title .Order.Status}}
+                        </dd>
+                    </div>
+                    <div
+                        class="mt-6 flex w-full flex-none gap-x-4 border-t border-gray-900/5 px-6 pt-6 dark:border-white/10">
+                        <dt class="flex-none">
+                            <span class="sr-only">Customer</span>
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="h-6 w-5 text-gray-400 dark:text-gray-500">
+                                <path
+                                    d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </dt>
+                        <dd class="text-sm/6 font-medium text-gray-900 dark:text-white">
+                            {{if .Order.Billing.Company}}{{.Order.Billing.Company}}{{else}}{{.Order.Billing.FirstName}}
+                            {{.Order.Billing.LastName}}{{end}}
+                        </dd>
+                    </div>
+                    <div class="mt-4 flex w-full flex-none gap-x-4 px-6">
+                        <dt class="flex-none">
+                            <span class="sr-only">Order date</span>
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="h-6 w-5 text-gray-400 dark:text-gray-500">
+                                <path
+                                    d="M5.25 12a.75.75 0 0 1 .75-.75h.01a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75H6a.75.75 0 0 1-.75-.75V12ZM6 13.25a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 0 0 .75-.75V14a.75.75 0 0 0-.75-.75H6ZM7.25 12a.75.75 0 0 1 .75-.75h.01a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75H8a.75.75 0 0 1-.75-.75V12ZM8 13.25a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 0 0 .75-.75V14a.75.75 0 0 0-.75-.75H8ZM9.25 10a.75.75 0 0 1 .75-.75h.01a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75H10a.75.75 0 0 1-.75-.75V10ZM10 11.25a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 0 0 .75-.75V12a.75.75 0 0 0-.75-.75H10ZM9.25 14a.75.75 0 0 1 .75-.75h.01a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75H10a.75.75 0 0 1-.75-.75V14ZM12 9.25a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 0 0 .75-.75V10a.75.75 0 0 0-.75-.75H12ZM11.25 12a.75.75 0 0 1 .75-.75h.01a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75H12a.75.75 0 0 1-.75-.75V12ZM12 13.25a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 0 0 .75-.75V14a.75.75 0 0 0-.75-.75H12ZM13.25 10a.75.75 0 0 1 .75-.75h.01a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75H14a.75.75 0 0 1-.75-.75V10ZM14 11.25a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 0 0 .75-.75V12a.75.75 0 0 0-.75-.75H14Z" />
+                                <path
+                                    d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </dt>
+                        <dd class="text-sm/6 text-gray-500 dark:text-gray-400">{{.Order.DateCreated}}</dd>
+                    </div>
+                    {{if .Order.PaymentMethodTitle}}
+                    <div class="mt-4 flex w-full flex-none gap-x-4 px-6">
+                        <dt class="flex-none">
+                            <span class="sr-only">Payment Method</span>
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="h-6 w-5 text-gray-400 dark:text-gray-500">
+                                <path
+                                    d="M2.5 4A1.5 1.5 0 0 0 1 5.5V6h18v-.5A1.5 1.5 0 0 0 17.5 4h-15ZM19 8.5H1v6A1.5 1.5 0 0 0 2.5 16h15a1.5 1.5 0 0 0 1.5-1.5v-6ZM3 13.25a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75Zm4.75-.75a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </dt>
+                        <dd class="text-sm/6 text-gray-500 dark:text-gray-400">{{.Order.PaymentMethodTitle}}</dd>
+                    </div>
+                    {{end}}
+                </dl>
+                <div class="mt-6 border-t border-gray-900/5 px-6 py-6 dark:border-white/10">
+                    <a href="/orders/{{.Order.ID}}/receipt"
+                        class="text-sm/6 font-semibold text-gray-900 dark:text-white">Download receipt <span
+                            aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Details -->
+        <div
+            class="bg-white -mx-4 px-4 py-8 shadow-xs ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pt-16 xl:pb-20 dark:shadow-none dark:ring-white/10">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-white">Order #{{.Order.Number}}</h2>
+
+            <!-- Order Info -->
+            <dl class="mt-6 grid grid-cols-1 text-sm/6 sm:grid-cols-2">
+                <div class="sm:pr-4">
+                    <dt class="inline text-gray-500 dark:text-gray-400">Created on</dt>
+                    <dd class="inline text-gray-700 dark:text-gray-300">{{.Order.DateCreated}}</dd>
+                </div>
+                {{if .Order.DateCompleted}}
+                <div class="mt-2 sm:mt-0 sm:pl-4">
+                    <dt class="inline text-gray-500 dark:text-gray-400">Completed on</dt>
+                    <dd class="inline text-gray-700 dark:text-gray-300">{{.Order.DateCompleted}}</dd>
+                </div>
+                {{end}}
+                {{if .Order.CreatedVia}}
+                <div class="mt-2 sm:pr-4">
+                    <dt class="inline text-gray-500 dark:text-gray-400">Created via</dt>
+                    <dd class="inline text-gray-700 dark:text-gray-300">{{title .Order.CreatedVia}}</dd>
+                </div>
+                {{end}}
+                {{if .Order.PaymentMethodTitle}}
+                <div class="mt-2 sm:mt-0 sm:pl-4">
+                    <dt class="inline text-gray-500 dark:text-gray-400">Payment</dt>
+                    <dd class="inline text-gray-700 dark:text-gray-300">{{.Order.PaymentMethodTitle}}</dd>
+                </div>
+                {{end}}
+
+                <!-- Shipping Address -->
+                <div class="mt-6 border-t border-gray-900/5 pt-6 sm:pr-4 dark:border-white/10">
+                    <dt class="font-semibold text-gray-900 dark:text-white">Ship To</dt>
+                    <dd class="mt-2 text-gray-500 dark:text-gray-400">
+                        <span class="font-medium text-gray-900 dark:text-white">{{.Order.Shipping.FirstName}}
+                            {{.Order.Shipping.LastName}}</span><br />
+                        {{if .Order.Shipping.Company}}{{.Order.Shipping.Company}}<br />{{end}}
+                        {{.Order.Shipping.Address1}}<br />
+                        {{if .Order.Shipping.Address2}}{{.Order.Shipping.Address2}}<br />{{end}}
+                        {{.Order.Shipping.City}}, {{.Order.Shipping.State}} {{.Order.Shipping.Postcode}}<br />
+                        {{.Order.Shipping.Country}}
+                    </dd>
+                </div>
+
+                <!-- Billing Address -->
+                <div class="mt-8 sm:mt-6 sm:border-t sm:border-gray-900/5 sm:pt-6 sm:pl-4 dark:sm:border-white/10">
+                    <dt class="font-semibold text-gray-900 dark:text-white">Bill To</dt>
+                    <dd class="mt-2 text-gray-500 dark:text-gray-400">
+                        <span class="font-medium text-gray-900 dark:text-white">{{.Order.Billing.FirstName}}
+                            {{.Order.Billing.LastName}}</span><br />
+                        {{if .Order.Billing.Company}}{{.Order.Billing.Company}}<br />{{end}}
+                        {{.Order.Billing.Address1}}<br />
+                        {{if .Order.Billing.Address2}}{{.Order.Billing.Address2}}<br />{{end}}
+                        {{.Order.Billing.City}}, {{.Order.Billing.State}} {{.Order.Billing.Postcode}}<br />
+                        {{.Order.Billing.Country}}<br />
+                        {{if .Order.Billing.Email}}<span
+                            class="text-indigo-600 dark:text-indigo-400">{{.Order.Billing.Email}}</span>{{end}}
+                        {{if .Order.Billing.Phone}}<br />{{.Order.Billing.Phone}}{{end}}
+                    </dd>
+                </div>
+            </dl>
+
+            <!-- Order Lines Table -->
+            <table class="mt-16 w-full text-left text-sm/6 whitespace-nowrap">
+                <colgroup>
+                    <col class="w-full" />
+                    <col />
+                    <col />
+                    <col />
+                </colgroup>
+                <thead class="border-b border-gray-200 text-gray-900 dark:border-white/15 dark:text-white">
+                    <tr>
+                        <th scope="col" class="px-0 py-3 font-semibold">Product</th>
+                        <th scope="col" class="hidden py-3 pr-0 pl-8 text-right font-semibold sm:table-cell">Qty</th>
+                        <th scope="col" class="hidden py-3 pr-0 pl-8 text-right font-semibold sm:table-cell">Price</th>
+                        <th scope="col" class="py-3 pr-0 pl-8 text-right font-semibold">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Order.LineItems}}
+                    <tr class="border-b border-gray-100 dark:border-white/10">
+                        <td class="max-w-0 px-0 py-5 align-top">
+                            <div class="truncate font-medium text-gray-900 dark:text-white">{{.Name}}</div>
+                            <div class="truncate text-gray-500 dark:text-gray-400">
+                                {{if .SKU}}SKU: {{.SKU}}{{end}}
+                                {{if .VariationID}} • Variation ID: {{.VariationID}}{{end}}
+                            </div>
+                        </td>
+                        <td
+                            class="hidden py-5 pr-0 pl-8 text-right align-top text-gray-700 tabular-nums sm:table-cell dark:text-gray-300">
+                            {{.Quantity}}</td>
+                        <td
+                            class="hidden py-5 pr-0 pl-8 text-right align-top text-gray-700 tabular-nums sm:table-cell dark:text-gray-300">
+                            {{$.Order.Currency}} {{printf "%.2f" (divideFloat .Subtotal .Quantity)}}</td>
+                        <td class="py-5 pr-0 pl-8 text-right align-top text-gray-700 tabular-nums dark:text-gray-300">
+                            {{$.Order.Currency}} {{.Total}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+                <tfoot>
+                    <!-- Subtotal -->
+                    <tr>
+                        <th scope="row" class="px-0 pt-6 pb-0 font-normal text-gray-700 sm:hidden dark:text-gray-300">
+                            Subtotal</th>
+                        <th scope="row" colspan="3"
+                            class="hidden px-0 pt-6 pb-0 text-right font-normal text-gray-700 sm:table-cell dark:text-gray-300">
+                            Subtotal</th>
+                        <td class="pt-6 pr-0 pb-0 pl-8 text-right text-gray-900 tabular-nums dark:text-white">
+                            {{.Order.Currency}} {{subtractFloat .Order.Total .Order.TotalTax .Order.ShippingTotal
+                            .Order.ShippingTax}}</td>
+                    </tr>
+
+                    <!-- Shipping -->
+                    {{if .Order.ShippingLines}}
+                    {{range .Order.ShippingLines}}
+                    <tr>
+                        <th scope="row" class="pt-4 font-normal text-gray-700 sm:hidden dark:text-gray-300">
+                            {{.MethodTitle}}</th>
+                        <th scope="row" colspan="3"
+                            class="hidden pt-4 text-right font-normal text-gray-700 sm:table-cell dark:text-gray-300">
+                            {{.MethodTitle}}</th>
+                        <td class="pt-4 pr-0 pb-0 pl-8 text-right text-gray-900 tabular-nums dark:text-white">
+                            {{$.Order.Currency}} {{.Total}}</td>
+                    </tr>
+                    {{end}}
+                    {{end}}
+
+                    <!-- Tax -->
+                    {{if ne .Order.TotalTax "0.00"}}
+                    <tr>
+                        <th scope="row" class="pt-4 font-normal text-gray-700 sm:hidden dark:text-gray-300">Tax</th>
+                        <th scope="row" colspan="3"
+                            class="hidden pt-4 text-right font-normal text-gray-700 sm:table-cell dark:text-gray-300">
+                            Tax</th>
+                        <td class="pt-4 pr-0 pb-0 pl-8 text-right text-gray-900 tabular-nums dark:text-white">
+                            {{.Order.Currency}} {{.Order.TotalTax}}</td>
+                    </tr>
+                    {{end}}
+
+                    <!-- Discounts -->
+                    {{if ne .Order.DiscountTotal "0.00"}}
+                    <tr>
+                        <th scope="row" class="pt-4 font-normal text-gray-700 sm:hidden dark:text-gray-300">Discount
+                        </th>
+                        <th scope="row" colspan="3"
+                            class="hidden pt-4 text-right font-normal text-gray-700 sm:table-cell dark:text-gray-300">
+                            Discount</th>
+                        <td class="pt-4 pr-0 pb-0 pl-8 text-right text-gray-900 tabular-nums dark:text-white">
+                            -{{.Order.Currency}} {{.Order.DiscountTotal}}</td>
+                    </tr>
+                    {{end}}
+
+                    <!-- Total -->
+                    <tr>
+                        <th scope="row" class="pt-4 font-semibold text-gray-900 sm:hidden dark:text-white">Total</th>
+                        <th scope="row" colspan="3"
+                            class="hidden pt-4 text-right font-semibold text-gray-900 sm:table-cell dark:text-white">
+                            Total</th>
+                        <td
+                            class="pt-4 pr-0 pb-0 pl-8 text-right font-semibold text-gray-900 tabular-nums dark:text-white">
+                            {{.Order.Currency}} {{.Order.Total}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- Coupons Section -->
+            {{if .Order.CouponLines}}
+            <div class="mt-8 border-t border-gray-200 pt-6 dark:border-white/15">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white">Coupons Applied</h3>
+                <dl class="mt-4 space-y-2">
+                    {{range .Order.CouponLines}}
+                    <div class="flex justify-between">
+                        <dt class="font-medium text-gray-900 dark:text-white">{{.Code}}</dt>
+                        <dd class="text-sm text-gray-500 dark:text-gray-400">-{{$.Order.Currency}} {{.Discount}}</dd>
+                    </div>
+                    {{end}}
+                </dl>
+            </div>
+            {{end}}
+
+            <!-- Customer Note Section -->
+            {{if .Order.CustomerNote}}
+            <div class="mt-8 border-t border-gray-200 pt-6 dark:border-white/15">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white">Customer Note</h3>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{.Order.CustomerNote}}</p>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{end}}
